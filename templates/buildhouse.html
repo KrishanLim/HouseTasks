@@ -1,0 +1,14 @@
+{% for message in messages %}
+{message}
+{% endfor %}
+
+<form method="POST" action="buildhouse">
+    {% csrf_token%}
+    <p>housename</p>
+    <input type="text" name="housename">
+    <p>password</p>
+    <input type="password" name="password"><br>
+    <p>confirm password</p>
+    <input type="password" name="confirm_password"><br>
+    <input type="submit">
+</form>

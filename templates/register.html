@@ -1,0 +1,21 @@
+{% for message in messages %}
+<style >
+    h6{
+        color:red;
+    }
+</style>
+<h6>{{message}}</h6>
+{% endfor %}
+
+<form method="POST" action="register">
+    {% csrf_token%}
+    <p>username</p>
+    <input type="text" name="username">
+    <p>email</p>
+    <input type="email" name="email">
+    <p>password</p>
+    <input type="password" name="password">
+    <p>confirm password</p>
+    <input type="password" name="confirm_password"><br>
+    <input type="submit">
+</form>

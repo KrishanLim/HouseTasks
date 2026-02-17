@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<!-- <style>
+        a{
+        text-decoration: none;
+        color: black;
+    }
+    a:hover{
+        text-decoration: underline;
+    }
+</style> -->
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>House Tasks</title>
+</head>
+
+<body>
+    <header>
+        {% if user.is_authenticated%}
+        <li><a href='logout'> logout</a></li>
+        {%else%}
+        <a href='register'> register</a>
+        <a href='login'> login</a>
+        {% endif %}
+        <center>
+            <h1>House Tasks</h1>
+        </center>
+    </header>
+
+    <main>
+        {% if user.is_authenticated%}
+        <h3>Hi {{user.username}}</h3>
+        {% endif %}
+        <br>
+        <h2>Welcome to House Tasks</h2>
+        <p>Manage and complete the house tasks according to the plans created by you and House members</p>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 House Tasks. All rights reserved.</p>
+    </footer>
+</body>
+
+</html>
