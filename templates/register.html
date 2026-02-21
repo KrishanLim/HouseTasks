@@ -1,9 +1,14 @@
+<!DOCTYPE html>
+<html lang="en">
+<meta charset="UTF-8">
+<title>Page Title</title>
+<head>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/styles.css'%}"
+</head>
+<body>
+
 {% for message in messages %}
-<style >
-    h6{
-        color:red;
-    }
-</style>
 <h6>{{message}}</h6>
 {% endfor %}
 
@@ -19,3 +24,6 @@
     <input type="password" name="confirm_password"><br>
     <input type="submit">
 </form>
+
+</body>
+</html>

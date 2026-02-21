@@ -1,16 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
-<!-- <style>
-        a{
-        text-decoration: none;
-        color: black;
-    }
-    a:hover{
-        text-decoration: underline;
-    }
-</style> -->
-
+{% load static %}
 <head>
+    <link rel="stylesheet" href="{% static 'css/styles.css'%}">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>House Tasks</title>
@@ -19,10 +11,10 @@
 <body>
     <header>
         {% if user.is_authenticated%}
-        <li><a href='logout'> logout</a></li>
+        <li><a href='logout'> LogOut</a></li>
         {%else%}
-        <a href='register'> register</a>
-        <a href='login'> login</a>
+        <a href='register'> Register</a>
+        <a href='login'> LogIn</a>
         {% endif %}
         <center>
             <h1>House Tasks</h1>
@@ -36,6 +28,8 @@
         <br>
         <h2>Welcome to House Tasks</h2>
         <p>Manage and complete the house tasks according to the plans created by you and House members</p>
+        <a href="enterhouse">Enter House</a><br>
+        <a href="buildhouse">Build House</a>
     </main>
 
     <footer>
