@@ -4,17 +4,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
+    <title>Enter House</title>
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
 </head>
 <body>
-
-    <form method="POST" action="login">
-        {% csrf_token%}
-        <p>username</p>
-        <input type="text" name="username">
-        <p>password</p>
-        <input type="password" name="password"><br>
+    <form method="POST">
+        {% csrf_token %}
+        <p>Housename</p>
+        <input type="text" name="housename"><br>
         {% for message in messages %}
         <h6>{{message}}</h6>
         {% endfor %}
@@ -23,4 +20,3 @@
 
 </body>
 </html>
-

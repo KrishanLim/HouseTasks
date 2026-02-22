@@ -1,6 +1,8 @@
-from django.shortcuts import render, redirect
-from django.contrib.auth.models import User, auth
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth.models import User, Group, auth
 from django.contrib import messages
+from .models import House
+# from cryptography.fernet import Fernet
 
 
 # Create your views here.
@@ -19,9 +21,12 @@ def register(request):
         password = request.POST["password"]
         confirm_password = request.POST["confirm_password"]
 
+        if username == "" or password == "" or confirm_password == "":     #Displays error message if user input is empty
+            messages.info(request, "Username or password cannot be empty")
+            return redirect("register")
         if password != confirm_password:
             messages.info(request, "password does not match")
-            return redirect(request, "register")
+            return redirect("register")
         if User.objects.filter(username=username).exists():
             messages.info(request, "username already exists")
             return redirect("register")
@@ -62,3 +67,42 @@ def logout(request):
     auth.logout(request)
     return redirect("/")
 
+
+def buildhouse(request):
+    if request.method == "POST":
+        housename = request.POST["housename"]
+        if housename == "":
+            messages.info(request, "Housename cannot be empty")
+            return redirect("buildhouse")
+        if House.objects.filter(housename=housename).exists():
+            messages.info(request, "House Already Exists")
+            return redirect("buildhouse")
+        house = House.objects.create(housename=housename)  # Creates a new House
+        house.save()
+        house.members.add(request.user)  # Adds the current logged in user
+        return redirect("enterhouse")       #Redirects to Enterhouse
+    else:
+        return render(request, "buildhouse.html")
+
+
+def enterhouse(request):
+    if request.method=='POST':
+        housename = request.POST["housename"]
+        if housename == "":
+            messages.info(request, "Housename cannot be empty")
+            return redirect("enterhouse")
+        if not House.objects.filter(housename=housename).exists():
+            messages.info(
+                request, "House does not exist"
+            )  # displays if house does not exist
+            return redirect("enterhouse")
+        house_id=House.objects.get(housename=housename).id  #assigns the id of housename
+        return redirect('house', house_id=house_id)     #Redirects to the house with the id assigned
+    else:
+        return render(request,'enterhouse.html')
+
+
+def house(request,house_id):
+    house=get_object_or_404(House,id=house_id,members=request.user) #Gets the House data if user is the member
+    housename=house.housename       
+    return render(request, "house.html",{'housename':housename})
