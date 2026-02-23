@@ -7,11 +7,7 @@ from .models import House
 
 # Create your views here.
 def home(request):
-    return render(request, "index.html")
-
-
-def cleaning(request):
-    return render(request, "Cleaning.html")
+    return render(request, "homepage/index.html")
 
 
 def register(request):
@@ -42,7 +38,7 @@ def register(request):
             user.save()  # Creates new user
             return redirect("login")
     else:
-        return render(request, "register.html")
+        return render(request, "homepage/register.html")
 
 
 def login(request):
@@ -60,7 +56,7 @@ def login(request):
             messages.info(request, "Username or password error")
             return redirect("login")
     else:
-        return render(request, "login.html")
+        return render(request, "homepage/login.html")
 
 
 def logout(request):
@@ -82,7 +78,7 @@ def buildhouse(request):
         house.members.add(request.user)  # Adds the current logged in user
         return redirect("enterhouse")       #Redirects to Enterhouse
     else:
-        return render(request, "buildhouse.html")
+        return render(request, "house/buildhouse.html")
 
 
 def enterhouse(request):
@@ -97,12 +93,27 @@ def enterhouse(request):
             )  # displays if house does not exist
             return redirect("enterhouse")
         house_id=House.objects.get(housename=housename).id  #assigns the id of housename
-        return redirect('house', house_id=house_id)     #Redirects to the house with the id assigned
+        return redirect('house',house_id=house_id)     #Redirects to the house with the id assigned
     else:
-        return render(request,'enterhouse.html')
+        return render(request,'house/enterhouse.html')
 
 
 def house(request,house_id):
     house=get_object_or_404(House,id=house_id,members=request.user) #Gets the House data if user is the member
     housename=house.housename       
-    return render(request, "house.html",{'housename':housename})
+    return render(request, "house/house.html",{'housename':housename,'house_id':house_id})
+
+def cleaning(request,house_id):
+    return render(request, "tasks/cleaning.html")
+
+def members(request,house_id):
+    return render(request,'house/members.html')
+
+def groceries(request,house_id):
+    return render(request,'house/groceries.html')
+
+def plans(request,house_id):
+    return render(request,'tasks/plans.html')
+
+def extras(request,house_id):
+    return render(request,'tasks/extras.html')
