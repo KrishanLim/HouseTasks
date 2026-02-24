@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.models import User, Group, auth
 from django.contrib import messages
 from .models import House
+
 # from cryptography.fernet import Fernet
 
 
@@ -17,7 +18,9 @@ def register(request):
         password = request.POST["password"]
         confirm_password = request.POST["confirm_password"]
 
-        if username == "" or password == "" or confirm_password == "":     #Displays error message if user input is empty
+        if (
+            username == "" or password == "" or confirm_password == ""
+        ):  # Displays error message if user input is empty
             messages.info(request, "Username or password cannot be empty")
             return redirect("register")
         if password != confirm_password:
@@ -76,13 +79,13 @@ def buildhouse(request):
         house = House.objects.create(housename=housename)  # Creates a new House
         house.save()
         house.members.add(request.user)  # Adds the current logged in user
-        return redirect("enterhouse")       #Redirects to Enterhouse
+        return redirect("enterhouse")  # Redirects to Enterhouse
     else:
         return render(request, "house/buildhouse.html")
 
 
 def enterhouse(request):
-    if request.method=='POST':
+    if request.method == "POST":
         housename = request.POST["housename"]
         if housename == "":
             messages.info(request, "Housename cannot be empty")
@@ -92,28 +95,43 @@ def enterhouse(request):
                 request, "House does not exist"
             )  # displays if house does not exist
             return redirect("enterhouse")
-        house_id=House.objects.get(housename=housename).id  #assigns the id of housename
-        return redirect('house',house_id=house_id)     #Redirects to the house with the id assigned
+        house_id = House.objects.get(
+            housename=housename
+        ).id  # assigns the id of housename
+        return redirect(
+            "house", house_id=house_id
+        )  # Redirects to the house with the id assigned
     else:
-        return render(request,'house/enterhouse.html')
+        return render(request, "house/enterhouse.html")
 
 
-def house(request,house_id):
-    house=get_object_or_404(House,id=house_id,members=request.user) #Gets the House data if user is the member
-    housename=house.housename       
-    return render(request, "house/house.html",{'housename':housename,'house_id':house_id})
+def house(request, house_id):
+    house = get_object_or_404(
+        House, id=house_id, members=request.user
+    )  # Gets the House data if user is the member
+    housename = house.housename
+    return render(
+        request, "house/house.html", {"housename": housename, "house_id": house_id}
+    )
 
-def cleaning(request,house_id):
+
+def cleaning(request, house_id):
     return render(request, "tasks/cleaning.html")
 
-def members(request,house_id):
-    return render(request,'house/members.html')
 
-def groceries(request,house_id):
-    return render(request,'house/groceries.html')
+def members(request, house_id):
+    house = get_object_or_404(House, id=house_id, members=request.user)
+    members = house.members.all()
+    return render(request, "house/members.html", {"members": members})
 
-def plans(request,house_id):
-    return render(request,'tasks/plans.html')
 
-def extras(request,house_id):
-    return render(request,'tasks/extras.html')
+def groceries(request, house_id):
+    return render(request, "tasks/groceries.html")
+
+
+def plans(request, house_id):
+    return render(request, "tasks/plans.html")
+
+
+def extras(request, house_id):
+    return render(request, "tasks/extras.html")

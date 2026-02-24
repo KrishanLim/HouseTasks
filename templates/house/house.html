@@ -8,16 +8,16 @@
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
 </head>
 <body>
-    <header><div style="display:flex; justify-content: center;"><a href="{% url 'members' house_id%}">Members</a></div></header>
+    <header><div style="display:flex; justify-content: center;"><a href="{%url 'members' house_id %}">Members</a></div></header>
     <center>
     <h1>Welcome to House {{housename}}</h1>
     <h3>Manage Your House Task with your Family Members</h3>
     </center>
     <main>
-    <a href="cleaning">Cleaning Tasks</a>
-    <a href="groceries">Groceries</a>
-    <a href="plans">Plans</a>
-    <a href="extras">Extras</a>
+    <a href="{%url 'cleaning' house_id %}">Cleaning Tasks</a>
+    <a href="{%url 'groceries' house_id %}">Groceries</a>
+    <a href="{%url 'plans' house_id %}">Plans</a>
+    <a href="{%url 'extras' house_id %}">Extras</a>
     </main>
 
 </body>
