@@ -87,17 +87,25 @@ def buildhouse(request):
 def enterhouse(request):
     if request.method == "POST":
         housename = request.POST["housename"]
-        if housename == "":
-            messages.info(request, "Housename cannot be empty")
+        house_id = request.POST["house_id"]
+
+        if housename == "" or house_id == "":
+            messages.info(request, "Fields cannot be empty")
             return redirect("enterhouse")
-        if not House.objects.filter(housename=housename).exists():
+
+        if not House.objects.filter(housename=housename, id=house_id).exists():
             messages.info(
-                request, "House does not exist"
+                request, "Incorrect House name or id"
             )  # displays if house does not exist
             return redirect("enterhouse")
-        house_id = House.objects.get(
-            housename=housename
-        ).id  # assigns the id of housename
+
+        if not House.objects.filter(members=request.user).exists():
+            messages.info(request, "Your are not a member, Request to join")
+            return redirect("enterhouse")
+
+        house = House.objects.get(
+            housename=housename, id=house_id
+        )  # assigns the house of housename
         return redirect(
             "house", house_id=house_id
         )  # Redirects to the house with the id assigned
@@ -105,11 +113,39 @@ def enterhouse(request):
         return render(request, "house/enterhouse.html")
 
 
+def request_join(request):
+    if request.method == "POST":
+        housename = request.POST["housename"]
+        house_id = request.POST["house_id"]
+
+        if housename == "" or house_id == "":
+            messages.info(request, "Fields cannot be empty")
+            return redirect("request_join")
+
+        if not House.objects.filter(housename=housename, id=house_id).exists():
+            messages.info(
+                request, "Incorrect House name or id"
+            )  # displays if house does not exist
+            return redirect("request_join")
+        house = House.objects.get(housename=housename, id=house_id)
+        if house.members.filter(
+            id=request.user.id
+        ).exists():  # loops through members to check if they are a member or not
+            messages.info(request, "You already are a member of this house")
+            return redirect("request_join")
+        house.request.add(request.user)  # Adds to the request list
+        messages.info(request, "Request sent successfully")
+        return redirect("request_join")
+
+    else:
+        return render(request, "house/request_join.html")
+
+
 def house(request, house_id):
-    house = get_object_or_404(
+    house_details = get_object_or_404(
         House, id=house_id, members=request.user
     )  # Gets the House data if user is the member
-    housename = house.housename
+    housename = house_details.housename
     return render(
         request, "house/house.html", {"housename": housename, "house_id": house_id}
     )
@@ -120,9 +156,32 @@ def cleaning(request, house_id):
 
 
 def members(request, house_id):
-    house = get_object_or_404(House, id=house_id, members=request.user)
-    members = house.members.all()
-    return render(request, "house/members.html", {"members": members})
+    if request.method=='POST':
+        member_id=request.POST.getlist('member[]')
+        members_action=request.POST.get('action')
+        join_request=request.POST.get('join_request')   
+        member_request=request.POST.getlist('member_request[]')     #gets list of checked members
+        house=House.objects.get(id=house_id)        #Slects house_id
+
+        if members_action=='remove_members':
+            for member in member_id:
+                house.members.remove(member)
+
+        if join_request=='add_members':       #If user pressed add members
+            for member in member_request:
+                house.members.add(member)         #Adds selected user to the members list
+                house.request.remove(member)    # Removes request
+        elif join_request=='reject_request':
+                for member in member_request:
+                    house.request.remove(member)    #Rejects join request
+        return redirect("members",house_id=house_id)
+    else:
+        house = get_object_or_404(House, id=house_id, members=request.user)
+        members = house.members.all()           #Gets all the house members
+        requests = house.request.all()          #Gets the user requests
+        return render(
+            request, "house/members.html", {'members':members,'requests':requests}
+        )
 
 
 def groceries(request, house_id):

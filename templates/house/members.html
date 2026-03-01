@@ -8,6 +8,38 @@
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
 </head>
 <body>
+        <table>
+            <tr>
+            <th>Members</th>
+            <th>Join request</th>
+            </tr>
+            <tr>
+            <td>
+                <form method="POST">
+                {% csrf_token %}
+                {% for member in members %}
+                <input type="checkbox" name="member[]" value="{{member.id}}"> {{member}}<br>
+                {% endfor %}
+                <button type="submit" name="action" value="remove_members">Remove members</button>
+                </form>
+            </td>
+            <td>
+                {% if requests %}
+                <form method="post">
+                {% csrf_token %}
+                {% for request in requests %}
+                <input type="checkbox" name="member_request[]" value="{{request.id}}"> {{request}}<br>
+                {% endfor %}
+                <button type="submit" name="join_request" value="add_members">Add Members</button>
+                <button type="submit" name="join_request" value="reject_request">Reject Request</button>
+                </form>
 
+                {% else %}
+                <h3>No join request yet</h3>
+                {% endif %}
+            </td>
+            </tr>
+            
+        </table>
 </body>
 </html>
