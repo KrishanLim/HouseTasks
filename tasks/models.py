@@ -5,10 +5,11 @@ from datetime import datetime
 # Create your models here.
 class House(models.Model):
     housename = models.CharField(max_length=100)
-    members=models.ManyToManyField(User)
+    members=models.ManyToManyField(User,related_name='house_members')
+    request=models.ManyToManyField(User,related_name='house_request')
 
     def __str__(self):
-        return self.housename
+        return f'{self.id}-{self.housename}'
 
 
 class Cleaning_Task(models.Model):

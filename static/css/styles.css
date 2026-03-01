@@ -253,3 +253,43 @@ p {
     margin-bottom: 1rem;
     font-size: 1rem;
 }
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    font-family: Arial, sans-serif;
+}
+
+thead {
+    background-color: #2c3e50;
+    color: white;
+}
+
+th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    vertical-align: top; /* keeps content aligned at top */
+}
+
+th {
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+tr {
+    border-bottom: 1px solid #ddd;
+}
+
+tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+tr:hover {
+    background-color: #f1f1f1;
+    transition: 0.2s ease;
+}
+
+td {
+    color: #333;
+}

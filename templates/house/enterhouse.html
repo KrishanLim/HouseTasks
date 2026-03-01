@@ -11,11 +11,14 @@
     <form method="POST">
         {% csrf_token %}
         <p>Housename</p>
-        <input type="text" name="housename"><br>
+        <input type="text" name="housename">
+        <p>House Id</p>
+        <input type="text" name="house_id"><br>
         {% for message in messages %}
         <h6>{{message}}</h6>
         {% endfor %}
         <input type="submit">
+        <a href="request_join">Request to join</a><br>
     </form>
 
 </body>

@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<meta charset="UTF-8">
+<head>
+{%load static%}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Request to Join</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<body>
+            <form method="POST">
+            {% csrf_token %}
+            <p>Housename</p>
+            <input type="text" name="housename">
+            <p>House Id</p>
+            <input type="text" name="house_id"><br>
+            {% for message in messages %}
+            <h6>{{message}}</h6>
+            {% endfor %}
+            <input type="submit" value="send">
+            </form>
+
+</body>
+</html>
