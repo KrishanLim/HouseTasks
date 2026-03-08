@@ -15,6 +15,7 @@
             </tr>
             <tr>
             <td>
+                <center>
                 <form method="POST">
                 {% csrf_token %}
                 {% for member in members %}
@@ -22,8 +23,10 @@
                 {% endfor %}
                 <button type="submit" name="action" value="remove_members">Remove members</button>
                 </form>
+                </center>
             </td>
             <td>
+                <center>
                 {% if requests %}
                 <form method="post">
                 {% csrf_token %}
@@ -33,6 +36,8 @@
                 <button type="submit" name="join_request" value="add_members">Add Members</button>
                 <button type="submit" name="join_request" value="reject_request">Reject Request</button>
                 </form>
+                </center>    
+            
 
                 {% else %}
                 <h3>No join request yet</h3>

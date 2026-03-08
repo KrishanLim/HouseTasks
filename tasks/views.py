@@ -1,7 +1,8 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.models import User, Group, auth
 from django.contrib import messages
-from .models import House
+from .models import House, Cleaning_Task
+from datetime import date, datetime
 
 # from cryptography.fernet import Fernet
 
@@ -152,35 +153,58 @@ def house(request, house_id):
 
 
 def cleaning(request, house_id):
-    return render(request, "tasks/cleaning.html")
+    if request.method=='POST':
+        house=get_object_or_404(House,id=house_id,members=request.user)
+        task_name=request.POST['task_name']
+        description=request.POST['description']
+        task=request.POST.get("task")   
+        date_today=date.today()                 #   Date
+        date_=date_today.isocalendar()           #Datefield
+        week=date_.week
+
+        if task=='add':
+            if task_name=='' or description=='':
+                messages.info(request, 'Task name or Description cannot be empty')
+                return redirect('cleaning',house_id)
+            new_task=Cleaning_Task.objects.create(name=task_name,description=description,user_added=request.user,date=datetime.now(),House=house_id,start_week=week)
+            messages.info(request,'Task added sucessfully')
+            return redirect('cleaning',house_id)
+
+    else:
+        house=get_object_or_404(House,id=house_id,members=request.user)
+        tasks=Cleaning_Task.objects.filter(House=house_id)
+        members=house.members.all()
+        return render(request, "tasks/cleaning.html",{'members':members,'tasks':tasks})
 
 
 def members(request, house_id):
-    if request.method=='POST':
-        member_id=request.POST.getlist('member[]')
-        members_action=request.POST.get('action')
-        join_request=request.POST.get('join_request')   
-        member_request=request.POST.getlist('member_request[]')     #gets list of checked members
-        house=House.objects.get(id=house_id)        #Slects house_id
+    if request.method == "POST":
+        member_id = request.POST.getlist("member[]")
+        members_action = request.POST.get("action")
+        join_request = request.POST.get("join_request")
+        member_request = request.POST.getlist(
+            "member_request[]"
+        )  # gets list of checked members
+        house = House.objects.get(id=house_id)  # Selects house_id
 
-        if members_action=='remove_members':
+        if members_action == "remove_members":
             for member in member_id:
                 house.members.remove(member)
 
-        if join_request=='add_members':       #If user pressed add members
+        if join_request == "add_members":  # If user pressed add members
             for member in member_request:
-                house.members.add(member)         #Adds selected user to the members list
-                house.request.remove(member)    # Removes request
-        elif join_request=='reject_request':
-                for member in member_request:
-                    house.request.remove(member)    #Rejects join request
-        return redirect("members",house_id=house_id)
+                house.members.add(member)  # Adds selected user to the members list
+                house.request.remove(member)  # Removes request
+        elif join_request == "reject_request":
+            for member in member_request:
+                house.request.remove(member)  # Rejects join request
+        return redirect("members", house_id=house_id)
     else:
         house = get_object_or_404(House, id=house_id, members=request.user)
-        members = house.members.all()           #Gets all the house members
-        requests = house.request.all()          #Gets the user requests
+        members = house.members.all()  # Gets all the house members
+        requests = house.request.all()  # Gets the user requests
         return render(
-            request, "house/members.html", {'members':members,'requests':requests}
+            request, "house/members.html", {"members": members, "requests": requests}
         )
 
 

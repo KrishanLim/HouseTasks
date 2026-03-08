@@ -13,11 +13,15 @@ class House(models.Model):
 
 
 class Cleaning_Task(models.Model):
-    name = models.CharField(max_length=250)
-    description = models.CharField(max_length=1000)
-    date = models.DateTimeField(default=datetime.now, blank=True)
-    done = models.BooleanField(default=False)
-    House = models.IntegerField(blank=True)     #Links to the House
+    user_added=models.CharField(max_length=100,blank=True)     #User who added the task
+    name = models.CharField(max_length=250, default=None)         #Name of task
+    description = models.CharField(max_length=1000, default= None
+    )     #Description of task
+    date = models.DateTimeField(default=datetime.now, null=True)   #date added
+    start_week=models.IntegerField(null=True)        #Week started
+    assigned_members=models.ManyToManyField(User)
+    done = models.BooleanField(default=False)       #Done status
+    House = models.IntegerField(null=True)     #Links to the House
 
     def __str__(self):
         return self.name

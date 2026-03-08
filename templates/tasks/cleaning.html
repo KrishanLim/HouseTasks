@@ -1,13 +1,78 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cleaning</title>
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
 </head>
-<body>
+<header>
+    <center>
+        <h1>Cleaning Task</h1>
+    </center>
+</header>
 
+<body>
+    <div class="task-section">
+        <table>
+            <h2>Kitchen</h2>
+            <tr>
+                <th>Tasks</th>
+                <th>Done</th>
+            </tr>
+            {% for task in tasks %}
+            <tr>
+                <td>
+                    Task Name: {{task.name}}<br>
+                    Description: {{task.description}}<br>
+                    Date Added: {{task.date}}<br>
+                    Added by: {{task.user_added}}
+                </td>
+                <td class="done">
+                    {% if task.done %}
+                    ✅
+                    {% else %}
+                    ❌
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+    <div class="container">
+        <div class="form-section">
+            <h4>Add Task</h4><br>
+            <form method="post">
+                {% csrf_token %}
+                <p>Task name</p>
+                <input type="text" name="task_name">
+                <p>Description</p>
+                <input type="text" name="description"><br>
+                {% for message in messages %}
+                <h6>{{message}}</h6>
+                {% endfor %}<br>
+                <button type="submit" name="task" value="add">Add Task</button>
+        </div>
+        <div class="list-section">
+            <h4>Assign members</h4><br>
+            {% for member in members%}
+            <input type="checkbox" name="assigned_members[]" value="{{member}}">{{member}}<br>
+            {% endfor %}
+        </div>
+        </form>
+    </div>
+    <!-- <form method="POST">
+            {% csrf_token %}
+            <input type="checkbox" name="kitchen" checked><br>
+            <button type="button" name="kitchen_action" value="kitchen_action">Submit</button>
+        </form> -->
+
+    <section>
+        <h2>Contact</h2>
+        <p>This is the contact section.</p>
+    </section>
 </body>
+
 </html>
