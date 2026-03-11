@@ -15,30 +15,63 @@
 </header>
 
 <body>
+    <div class="messages">
+        {% if messages %}
+        {% for message in messages%}
+        <div class="alert {{ message.tags }}">
+            {{message}}
+        </div>
+        {% endfor %}
+        {% endif %}
+    </div>
     <div class="task-section">
         <table>
-            <h2>Kitchen</h2>
-            <tr>
-                <th>Tasks</th>
-                <th>Done</th>
-            </tr>
-            {% for task in tasks %}
-            <tr>
-                <td>
-                    Task Name: {{task.name}}<br>
-                    Description: {{task.description}}<br>
-                    Date Added: {{task.date}}<br>
-                    Added by: {{task.user_added}}
-                </td>
-                <td class="done">
-                    {% if task.done %}
-                    ✅
-                    {% else %}
-                    ❌
-                    {% endif %}
-                </td>
-            </tr>
-            {% endfor %}
+            <form method="POST" action="{% url 'task_action' house_id%}">
+                {% csrf_token %}
+                <h2>Kitchen</h2>
+                Action:
+                <select name="task_action" id="task_action">
+                    <option value="">------</option>
+                    <option value="edit">Edit Task</option>
+                    <option value="delete">Delete Task</option>
+                    <option value="done">Mark Done</option>
+                    <option value="unmark_done">Mark Not Done</option>
+                </select>
+                <button type="button" name="task" id="task" value="action" onclick="openPopup()">Run Action</button>
+                <div class="popup" id="popup">
+                    <div class="popup-inner">
+                        <h1>Are you sure you want to delete tasks</h1>
+                        <button type="submit" name="delete" value="yes" id="yes" onclick="closePopup()">Yes</button>
+                        <button type="button" id="no" onclick="closePopup()">No</button>
+                    </div>
+                </div>
+                <tr>
+                    <th class="select">Select
+                    </th>
+                    <th>Tasks</th>
+                    <th>Done</th>
+                </tr>
+                {% for task in tasks %}
+                <tr>
+                    <td>
+                        <input type="checkbox" name="task_action[]">
+                    </td>
+                    <td>
+                        Task Name: {{task.name}}<br>
+                        Description: {{task.description}}<br>
+                        Date Added: {{task.date}}<br>
+                        Added by: {{task.user_added}}
+                    </td>
+                    <td class="done">
+                        {% if task.done %}
+                        ✅
+                        {% else %}
+                        ❌
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </form>
         </table>
     </div>
     <div class="container">
@@ -50,29 +83,39 @@
                 <input type="text" name="task_name">
                 <p>Description</p>
                 <input type="text" name="description"><br>
-                {% for message in messages %}
-                <h6>{{message}}</h6>
-                {% endfor %}<br>
                 <button type="submit" name="task" value="add">Add Task</button>
         </div>
         <div class="list-section">
             <h4>Assign members</h4><br>
             {% for member in members%}
-            <input type="checkbox" name="assigned_members[]" value="{{member}}">{{member}}<br>
+            <input type="checkbox" name="assigned_members[]" value={{member.id}}>{{member}}<br>
             {% endfor %}
         </div>
         </form>
     </div>
-    <!-- <form method="POST">
-            {% csrf_token %}
-            <input type="checkbox" name="kitchen" checked><br>
-            <button type="button" name="kitchen_action" value="kitchen_action">Submit</button>
-        </form> -->
-
     <section>
         <h2>Contact</h2>
         <p>This is the contact section.</p>
     </section>
+    <script>
+        let popup = document.getElementById("popup");
+        function openPopup() {
+            let task_action = document.getElementById("task_action").value;
+            let button = document.getElementById("task");
+            console.log(task_action);
+            if (task_action == "delete") {
+                task.type = "button"
+                console.log("del")
+                popup.classList.add("open-popup")
+            }
+            else {
+                task.type = "submit"
+            }
+        }
+        function closePopup() {
+            popup.classList.remove("open-popup")
+        }
+    </script>
 </body>
 
 </html>

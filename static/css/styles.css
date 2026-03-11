@@ -330,3 +330,51 @@ button:hover {
 .list-section{
     flex:1;
 }
+
+select {
+  padding: 2px;
+  font-size: 12px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: white;
+  color: black;
+  width: 110px;
+}
+
+.task-section .select{
+    width: 90px
+}
+
+.alert {
+    padding: 10px;
+    margin: 10px 0;
+}
+
+.success {
+    background: rgb(129, 241, 129);
+}
+
+.error {
+    background: rgb(226, 90, 90);
+}
+
+.info {
+    background: rgb(120, 182, 120);
+}
+
+.popup {
+    width :400px;
+    background : #fff;
+    border-radius : 6px;
+    position : absolute;
+    top : 35%;
+    left : 35%;
+    text-align : center;
+    padding : 0 30px 30px;
+    color : #333;
+    visibility: hidden;
+}
+
+.open-popup {
+    visibility: visible;
+}
