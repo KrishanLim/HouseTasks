@@ -15,6 +15,7 @@
 </header>
 
 <body>
+    <!--  Messages  -->
     <div class="messages">
         {% if messages %}
         {% for message in messages%}
@@ -22,7 +23,7 @@
             {{message}}
         </div>
         {% endfor %}
-        {% endif %}
+        {% endif %}           
     </div>
     <div class="task-section">
         <table>
@@ -37,7 +38,7 @@
                     <option value="done">Mark Done</option>
                     <option value="unmark_done">Mark Not Done</option>
                 </select>
-                <button type="button" name="task" id="task" value="action" onclick="openPopup()">Run Action</button>
+                <button type="button" name="task" id="task" value="action" onclick="openPopup()">Run Action</button><br><br>
                 <div class="popup" id="popup">
                     <div class="popup-inner">
                         <h1>Are you sure you want to delete tasks</h1>
@@ -46,24 +47,31 @@
                     </div>
                 </div>
                 <tr>
-                    <th class="select">Select
+                    <th class="check" onclick="toggleCheckbox(this)">
+                         <input type="checkbox" name="select_all" id="select_all" onclick="toggleAllCheckboxes(this)"> All
                     </th>
                     <th>Tasks</th>
                     <th>Done</th>
                 </tr>
                 {% for task in tasks %}
                 <tr>
-                    <td>
-                        <input type="checkbox" name="task_action[]">
+                    <td onclick="toggleCheckbox(this)" class="check">
+                        <input type="checkbox" name="task_action[]" value="{{task.task.id}}">   <!-- Assigns the task id to checkbox-->
                     </td>
                     <td>
-                        Task Name: {{task.name}}<br>
-                        Description: {{task.description}}<br>
-                        Date Added: {{task.date}}<br>
-                        Added by: {{task.user_added}}
+                        <table class="task_display
+                        "> <!-- Displays the task values -->
+                        <tr><td>Task Name</td><td><h3>{{task.task.name}}</h3></td></tr>
+                        <tr><td>Description</td><td> {{task.task.description}}</td></tr>
+                        <tr><td>Assigned Members</td><td>{% for member in task.assigned_members %}
+                            ({{member}})
+                            {% endfor %}</td></tr>
+                        <tr><td>Date Added</td><td>{{task.task.date.date}}</td></tr>
+                        <tr><td>Added by</td><td>{{task.task.user_added}}</td></tr>
+                        </table>
                     </td>
                     <td class="done">
-                        {% if task.done %}
+                        {% if task.task.done %}
                         ✅
                         {% else %}
                         ❌
@@ -97,9 +105,11 @@
         <h2>Contact</h2>
         <p>This is the contact section.</p>
     </section>
+
+
     <script>
         let popup = document.getElementById("popup");
-        function openPopup() {
+        function openPopup() {                              //Opens popup for delete func
             let task_action = document.getElementById("task_action").value;
             let button = document.getElementById("task");
             console.log(task_action);
@@ -112,8 +122,21 @@
                 task.type = "submit"
             }
         }
-        function closePopup() {
+
+        function closePopup() {                        //Closes popup
             popup.classList.remove("open-popup")
+        }
+
+        function toggleCheckbox(cell) {                     //Toggles checkbox when cell is clicked
+            cell.querySelector('input').click();
+        }
+
+        function toggleAllCheckboxes(master) {
+            let checkboxes = document.querySelectorAll('input[name="task_action[]"]');
+
+            checkboxes.forEach(function(box) {
+                box.checked = master.checked;
+            });
         }
     </script>
 </body>
