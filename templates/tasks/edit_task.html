@@ -1,0 +1,51 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit task</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<body>
+    <form method="POST" class="edit-task-form">
+        {% csrf_token %}
+        <table class="edit_task">
+            <tr>
+                <th colspan="2">Edit Task</th>
+            </tr>
+            {% for task in tasks %}
+            <tr>
+                <td class="edit_task">
+                        <tr><td>Task Name</td><td><input type="text" name="task_name[]" value="{{task.name}}"></td></tr>
+                        <tr>
+                            <td>Description</td>
+                            <td>
+                                <textarea
+                                    name="description[]"
+                                    class="description-box"
+                                    rows="6"
+                                >{{task.description}}</textarea>
+                            </td>
+                        </tr>
+                        <tr><td></td><td><button type="button" name="add_members" id="add_members">Add Members</button>
+                                <button type="button" name="remove_members" id="remove_members">Remove Members</button>
+                            </td></tr>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </form>
+    <script>
+        const boxes = document.querySelectorAll("textarea.description-box");
+        for (const box of boxes) {
+            const autoResize = () => {
+                box.style.height = "auto";
+                box.style.height = box.scrollHeight + "px";
+            };
+            box.addEventListener("input", autoResize);
+            autoResize();
+        }
+    </script>
+</body>
+</html>

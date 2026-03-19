@@ -135,7 +135,7 @@ def request_join(request):
             messages.info(request, "You already are a member of this house")
             return redirect("request_join")
         house.request.add(request.user)  # Adds to the request list
-        messages.info(request, "Request sent successfully")
+        messages.success(request, "Request sent successfully")
         return redirect("request_join")
 
     else:
@@ -157,24 +157,77 @@ def cleaning(request, house_id):
         house=get_object_or_404(House,id=house_id,members=request.user)
         task_name=request.POST['task_name']
         description=request.POST['description']
-        task=request.POST.get("task")   
+        task=request.POST.get("task")
+        assigned_members= request.POST.getlist("assigned_members[]")
         date_today=date.today()                 #   Date
         date_=date_today.isocalendar()           #Datefield
         week=date_.week
 
-        if task=='add':
+        if task=='add':             #adds tasks if user presses add task button
             if task_name=='' or description=='':
-                messages.info(request, 'Task name or Description cannot be empty')
+                messages.error(request, 'Task name or Description cannot be empty')
+                return redirect('cleaning',house_id)
+            if not assigned_members:
+                messages.error(request,'Assign members')
                 return redirect('cleaning',house_id)
             new_task=Cleaning_Task.objects.create(name=task_name,description=description,user_added=request.user,date=datetime.now(),House=house_id,start_week=week)
-            messages.info(request,'Task added sucessfully')
+            for member in assigned_members:
+                new_task.assigned_members.add(member)
+            messages.success(request,'Task added sucessfully')
             return redirect('cleaning',house_id)
 
     else:
-        house=get_object_or_404(House,id=house_id,members=request.user)
-        tasks=Cleaning_Task.objects.filter(House=house_id)
+        house=get_object_or_404(House,id=house_id,members=request.user) #Gets the house from models with specific houseId if user is on of the member
+        tasks_data=Cleaning_Task.objects.filter(House=house_id) #Gets the tasks_data
+        tasks=[]
+        for task in tasks_data:
+            tasks.append({'task': task,'assigned_members':task.assigned_members.all()})
         members=house.members.all()
-        return render(request, "tasks/cleaning.html",{'members':members,'tasks':tasks})
+        return render(request, "tasks/cleaning.html",{'members':members,'tasks':tasks,'house_id':house_id})
+
+def task_action(request, house_id):     #Actions to be performed on tasks (UD) OF CRUD
+    action=request.POST.get('task_action')
+    tasks=request.POST.getlist('task_action[]')
+    cleaning = Cleaning_Task.objects.filter(House=house_id)
+    delete = request.POST.get('delete')
+
+    if action=='':
+        messages.error(request,'Select Action to perform')
+        return redirect('cleaning',house_id)
+    if not tasks:
+        messages.error(request,'Select tasks to perform actions')
+        return redirect('cleaning',house_id)
+    elif action=='edit':
+        tasks_to_edit=[]
+        for task in tasks:
+            tasks_to_edit.append(cleaning.get(id=task))
+        return render(request,'tasks/edit_task.html',{'tasks' : tasks_to_edit})
+    if delete=="yes":
+        for task in tasks:
+            task_to_delete = cleaning.get(id=task)
+            task_to_delete.delete()
+        messages.success(request,'successfully deletd tasks')
+        return redirect('cleaning',house_id)
+    if action=='done':
+        for task_id in tasks:
+            task_to_mark = cleaning.get(id=task_id)
+            task_to_mark.done=True
+            task_to_mark.save()
+        messages.success(request,'Tasks marked done')
+        return redirect('cleaning',house_id)
+    if action=='unmark_done':
+        for task_id in tasks:
+            task_to_unmark=cleaning.get(id=task_id)
+            task_to_unmark.done=False
+            task_to_unmark.save()
+        messages.success(request,'Tasks unmarked done')
+    return redirect('cleaning',house_id)
+
+
+def edit_task(tasks):
+    pass
+
+    
 
 
 def members(request, house_id):
@@ -207,14 +260,3 @@ def members(request, house_id):
             request, "house/members.html", {"members": members, "requests": requests}
         )
 
-
-def groceries(request, house_id):
-    return render(request, "tasks/groceries.html")
-
-
-def plans(request, house_id):
-    return render(request, "tasks/plans.html")
-
-
-def extras(request, house_id):
-    return render(request, "tasks/extras.html")

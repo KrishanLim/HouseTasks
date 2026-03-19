@@ -56,11 +56,10 @@
                 {% for task in tasks %}
                 <tr>
                     <td onclick="toggleCheckbox(this)" class="check">
-                        <input type="checkbox" name="task_action[]" value="{{task.task.id}}">   <!-- Assigns the task id to checkbox-->
+                        <input type="checkbox" name="task_action[]" value="{{task.task.id}}">  <!-- Assigns the task id to checkbox-->
                     </td>
                     <td>
-                        <table class="task_display
-                        "> <!-- Displays the task values -->
+                        <table class="task_display"> <!-- Displays the task values -->
                         <tr><td>Task Name</td><td><h3>{{task.task.name}}</h3></td></tr>
                         <tr><td>Description</td><td> {{task.task.description}}</td></tr>
                         <tr><td>Assigned Members</td><td>{% for member in task.assigned_members %}

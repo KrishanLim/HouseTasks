@@ -161,6 +161,9 @@ form input[type="text"],
 form input[type="email"],
 form input[type="password"] {
     width: 100%;
+    field-sizing: content;
+    min-width:100px;
+    max-width: 500px;
     padding: 0.75rem 1rem;
     font-size: 1rem;
     border: 1px solid #cbd5e1;
@@ -217,6 +220,16 @@ body>form {
     box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
 }
 
+/* Override card sizing for edit-task form so background fits table */
+body>form.edit-task-form {
+    max-width: none;
+    width: auto;
+    margin: 2rem auto;
+    background: transparent;
+    padding: 0;
+    box-shadow: none;
+}
+
 body>h6 {
     margin-bottom: 1rem;
 }
@@ -254,7 +267,6 @@ p {
 }
 
 table {
-    width: 100%;
     border-collapse: collapse;
     font-family: Arial, sans-serif;
     background: white;
@@ -263,7 +275,11 @@ table {
 }
 
 .task_display td:first-child {
-    width: 160px;
+    min-width: 160px;
+}
+
+.task_display td:nth-child(2) {
+    width: 100%;
 }
 
 th {
@@ -317,6 +333,46 @@ button:hover {
     margin: 2rem;
 }
 
+.edit_task {
+    width: 100%;
+    display: inline-table;
+    /* margin: 2rem auto; */
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+}
+
+.edit-task-form {
+    width: 100%;
+    /* max-width: none; */
+    width: 1000px;
+    margin: 0;
+    text-align: center;
+    overflow-x: auto;
+}
+
+.edit_task th {
+    width: 100%;
+    text-align: center;
+}
+
+.edit_task > tbody > tr > td {
+    vertical-align: top;
+    text-align: left;
+}
+
+.edit_task td {
+    word-break: break-word;
+}
+
+.edit_task td:first-child{
+    min-width: 120px;
+    padding-top: 20px;
+}
+
+.edit_task td:nth-child(2) {
+    width: 100%;
+    width: 800px;
+}
+
 .task-section .done {
     width: 100px;
     text-align: center;
@@ -349,7 +405,7 @@ select {
 }
 
 .task-section .select {
-    width: 90px
+    width: 90px;
 }
 
 .alert {
@@ -384,4 +440,23 @@ select {
 
 .open-popup {
     visibility: visible;
+}
+
+textarea {
+    border-radius: 5px;
+    width: 100%;
+    /* padding: 10px 10px 10px 10px; */
+    font-family: Arial;
+    font-size: 16px;
+    overflow: auto;
+}
+
+.description-box {
+    width: 100%;
+    min-width: 320px;
+    min-height: 20px;
+    resize: none;
+    overflow: auto;
+    padding: 10px;
+    line-height: 1.50;
 }
