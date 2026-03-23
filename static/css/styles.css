@@ -296,9 +296,9 @@ td {
 
 .check {
     cursor: pointer;
-    text-align: center;
+    text-align: left;
     vertical-align:top;
-    width: 70px;
+    min-width: 62px;
 }
 
 
@@ -333,6 +333,11 @@ button:hover {
     margin: 2rem;
 }
 
+.display_task td:nth-child(2) {
+    width: 100%;
+    max-width: 800px;
+}
+
 .edit_task {
     width: 100%;
     display: inline-table;
@@ -342,11 +347,11 @@ button:hover {
 
 .edit-task-form {
     width: 100%;
-    /* max-width: none; */
-    width: 1000px;
+    max-width: none;
+    width: 100px;
     margin: 0;
     text-align: center;
-    overflow-x: auto;
+    /* overflow-x: auto; */
 }
 
 .edit_task th {
@@ -359,19 +364,17 @@ button:hover {
     text-align: left;
 }
 
-.edit_task td {
-    word-break: break-word;
-}
-
-.edit_task td:first-child{
-    min-width: 120px;
+.edit_task td:first-child {
     padding-top: 20px;
+    background-color: white;
+    max-width: 95px;
+    padding-right : 20px;
 }
 
 .edit_task td:nth-child(2) {
     width: 100%;
     width: 800px;
-}
+}   
 
 .task-section .done {
     width: 100px;
@@ -429,9 +432,10 @@ select {
     width: 400px;
     background: #fff;
     border-radius: 6px;
-    position: absolute;
-    top: 35%;
-    left: 35%;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
     text-align: center;
     padding: 0 30px 30px;
     color: #333;

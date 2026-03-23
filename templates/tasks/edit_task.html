@@ -17,7 +17,7 @@
             {% for task in tasks %}
             <tr>
                 <td class="edit_task">
-                        <tr><td>Task Name</td><td><input type="text" name="task_name[]" value="{{task.name}}"></td></tr>
+                        <tr><td>Name</td><td><input type="text" name="task_name[]" value="{{task.task.name}}"></td></tr>
                         <tr>
                             <td>Description</td>
                             <td>
@@ -25,12 +25,34 @@
                                     name="description[]"
                                     class="description-box"
                                     rows="6"
-                                >{{task.description}}</textarea>
+                                >{{task.task.description}}</textarea>
                             </td>
                         </tr>
-                        <tr><td></td><td><button type="button" name="add_members" id="add_members">Add Members</button>
-                                <button type="button" name="remove_members" id="remove_members">Remove Members</button>
-                            </td></tr>
+                        <!-- Popup buttons for add and remove members -->
+                        <tr><td>Members</td>
+                            <td>
+                                <button type="button" id="add_members" onclick="openPopup()">Add Members</button>
+                                <button type="button" id="remove_members" onclick="openPopup_remove_members()">Remove Members</button>
+                            </td>
+                        </tr>
+                            <div class="popup" id="popup">
+                                <h3>Add members</h3>
+                                {% for member in task.not_assigned_members%}
+                                    <label>
+                                        <input type="checkbox" name="add_members[]"value="{{member}}">{{member}}</option><br>
+                                    </label>
+                                {% endfor %}
+                                <button type="button" id="close-popup" onclick="closePopup()">Close</button>
+                            </div>
+                            <div class="popup" id="popup-remove-members">
+                                <h3>Remove Members</h3>
+                                {% for member in task.task.assigned_members.all %}
+                                    <label>
+                                        <input type="checkbox" name="remove_members[]" value="{{member}}">{{member}}<br>
+                                    </label>
+                                {% endfor %}
+                                <button type="button" onclick="closePopup_remove_members()">Close</button>
+                            </div>
                 </td>
             </tr>
             {% endfor %}
@@ -45,6 +67,26 @@
             };
             box.addEventListener("input", autoResize);
             autoResize();
+        }
+
+        function openPopup() {
+            let popup= document.getElementById("popup");
+            popup.classList.add("open-popup")
+        }
+
+        function closePopup() {
+            let popup = document.getElementById("popup");
+            popup.classList.remove("open-popup")
+        }
+
+        function openPopup_remove_members() {
+            let popup = document.getElementById("popup-remove-members");
+            popup.classList.add("open-popup")
+        }
+
+        function closePopup_remove_members() {
+            let popup = document.getElementById("popup-remove-members");
+            popup.classList.remove('open-popup')
         }
     </script>
 </body>

@@ -26,7 +26,7 @@
         {% endif %}           
     </div>
     <div class="task-section">
-        <table>
+        <table class="display_task">
             <form method="POST" action="{% url 'task_action' house_id%}">
                 {% csrf_token %}
                 <h2>Kitchen</h2>
@@ -48,7 +48,7 @@
                 </div>
                 <tr>
                     <th class="check" onclick="toggleCheckbox(this)">
-                         <input type="checkbox" name="select_all" id="select_all" onclick="toggleAllCheckboxes(this)"> All
+                        <input type="checkbox" name="select_all" id="select_all" onclick="toggleAllCheckboxes(this)"> All
                     </th>
                     <th>Tasks</th>
                     <th>Done</th>
@@ -113,12 +113,12 @@
             let button = document.getElementById("task");
             console.log(task_action);
             if (task_action == "delete") {
-                task.type = "button"
+                button.type = "button"
                 console.log("del")
                 popup.classList.add("open-popup")
             }
             else {
-                task.type = "submit"
+                button.type = "submit"
             }
         }
 
@@ -139,5 +139,4 @@
         }
     </script>
 </body>
-
 </html>
