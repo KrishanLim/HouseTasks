@@ -197,10 +197,19 @@ def task_action(request, house_id):     #Actions to be performed on tasks (UD) O
     if not tasks:
         messages.error(request,'Select tasks to perform actions')
         return redirect('cleaning',house_id)
+
+    #Renders edit_task page
     elif action=='edit':
         tasks_to_edit=[]
+      
         for task in tasks:
-            tasks_to_edit.append(cleaning.get(id=task))
+            house_task=cleaning.get(id=task)
+            house=House.objects.get(id=house_id)
+            house_members = house.members.all()
+            task_members = house_task.assigned_members.all()    
+            #Gets members that are not assigned to the task
+            not_assigned_members = list(set(task_members) ^ set(house_members))
+            tasks_to_edit.append({'task': house_task, 'not_assigned_members':not_assigned_members})
         return render(request,'tasks/edit_task.html',{'tasks' : tasks_to_edit})
     if delete=="yes":
         for task in tasks:
