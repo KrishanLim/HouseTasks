@@ -8,34 +8,36 @@
     <title>Edit task</title>
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
 </head>
-
 <body>
-    <form method="POST" class="edit-task-form">
+    <form method="POST" action="{% url 'edit_task' house_id %}" class="edit-task-form">
         {% csrf_token %}
-
+        <div class="edit-task-wrap">
         <table class="edit_task">
             <tr>
                 <th colspan="2">Edit Task</th>
             </tr>
             {% for task in tasks %}
+            <!-- hidden value for returning task id -->
+             <input type="hidden" name="task_id[]" value="{{task.task.id}}">
             <tr>
                 <td class="edit_task">
             <tr>
                 <td>Name</td>
-                <td><input type="text" name="task_name[]" value="{{task.task.name}}"></td>
+                <td><input type="text" name="task_name{{task.task.id}}" value="{{task.task.name}}"></td>
             </tr>
             <tr>
                 <td>Description</td>
                 <td>
-                    <textarea name="description[]" class="description-box" rows="6">{{task.task.description}}</textarea>
+                    <textarea name="description{{task.task.id}}" class="description-box" rows="6">{{task.task.description}}</textarea>
                 </td>
             </tr>
-            <!-- Popup buttons for add and remove members -->
 
             <tr>
                 <td>Members</td>
                 <td>
+                    <!-- Div class for popup selection of specific loop iteration -->
                     <div class="for-popup">
+                        <!-- Popup buttons for add and remove members -->
                         <button type="button" id="add_members" onclick="popup(this , 'add')">Add Members</button>
                         <button type="button" id="remove_members" onclick="popup(this , 'remove')">Remove
                             Members</button>
@@ -44,7 +46,7 @@
                             <h3>Add members</h3>
                             {% for member in task.not_assigned_members%}
                             <label>
-                                <input type="checkbox" name="add_members" value="{{member}}">{{member}}</option><br>
+                                <input type="checkbox" name="add_members{{task.task.id}}[]" value="{{member.id}}">{{member}}</option><br>
                             </label>
                             {% endfor %}
                             <button type="button" id="close-popup" onclick="popup(this, 'close-add')">Close</button>
@@ -53,7 +55,7 @@
                             <h3>Remove Members</h3>
                             {% for member in task.task.assigned_members.all %}
                             <label>
-                                <input type="checkbox" name="remove_members" value="{{member}}">{{member}}<br>
+                                <input type="checkbox" name="remove_members{{task.task.id}}[]" value="{{member.id}}">{{member}}<br>
                             </label>
                             {% endfor %}
                             <button type="button" onclick="popup(this, 'close-remove')">Close</button>
@@ -65,7 +67,16 @@
             </td>
             </tr>
             {% endfor %}
+            <tr>
+            <td colspan="2">
+                <div class="edit_buttons">
+                <button type="submit" name="save_changes">Save</button>
+                <button type="submit" name="cancel_changes">Cancel</button>
+                </div>
+            </td>
+            </tr>
         </table>
+        </div>
     </form>
     <script>
         const boxes = document.querySelectorAll("textarea.description-box");
@@ -78,8 +89,10 @@
             autoResize();
         }
 
+        // For display and remove popup
         function popup(button, type) {
             console.log('openpopup')
+            // Selects element of the specific class
             let item = button.closest(".for-popup");
 
             if (type == "add") {
@@ -89,17 +102,17 @@
 
             if (type == "close-add") {
                 let popup = item.querySelector(".popup-add");
-                popup.classList.remove("popup", "open-popup");
+                popup.classList.remove("open-popup");
             }
 
             if (type == "remove") {
                 let popup = item.querySelector(".popup-remove");
-                popup.classList.add("popup", "open-popup");
+                popup.classList.add("open-popup");
             }
 
             if (type == "close-remove") {
                 let popup = item.querySelector(".popup-remove");
-                popup.classList.remove("popup", "open-popup");
+                popup.classList.remove("open-popup");
             }
 
         }

@@ -210,7 +210,7 @@ def task_action(request, house_id):     #Actions to be performed on tasks (UD) O
             #Gets members that are not assigned to the task
             not_assigned_members = list(set(task_members) ^ set(house_members))
             tasks_to_edit.append({'task': house_task, 'not_assigned_members':not_assigned_members})
-        return render(request,'tasks/edit_task.html',{'tasks' : tasks_to_edit})
+        return render(request,'tasks/edit_task.html',{'tasks' : tasks_to_edit, 'house_id' : house_id})
     if delete=="yes":
         for task in tasks:
             task_to_delete = cleaning.get(id=task)
@@ -233,10 +233,32 @@ def task_action(request, house_id):     #Actions to be performed on tasks (UD) O
     return redirect('cleaning',house_id)
 
 
-def edit_task(tasks):
-    pass
+def edit_task(request, house_id):
+    if 'save_changes' in request.POST:
+        #Do not move this
+        do_not_move_this_task_id = request.POST.getlist('task_id[]')
+        
+        #Change every task
+        for num in do_not_move_this_task_id:
+            task_name=request.POST.get(f'task_name{num}')
+            task_description = request.POST.get(f'description{num}')
+            members_to_add = request.POST.getlist(f'add_members{num}[]')
+            members_to_remove = request.POST.getlist(f'remove_members{num}[]')
+            task= Cleaning_Task.objects.get(id=num)
+            task.name = task_name
+            task.description = task_description
 
-    
+            for member in members_to_add:
+                task.assigned_members.add(member)
+            for member in members_to_remove:
+                task.assigned_members.remove(member)
+            task.save()
+
+        return redirect('cleaning',house_id=house_id)
+
+             
+    if 'cancel_changes' in request.POST:
+        return redirect('cleaning')
 
 
 def members(request, house_id):
