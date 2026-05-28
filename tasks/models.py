@@ -19,7 +19,7 @@ class Cleaning_Task(models.Model):
     )     #Description of task
     date = models.DateTimeField(default=datetime.now, null=True)   #date added
     start_week=models.IntegerField(null=True)        #Week started
-    assigned_members=models.ManyToManyField(User)   #Members assigned to the task
+    assigned_members = models.ManyToManyField(User)   #Members assigned to the task
     done = models.BooleanField(default=False)       #Done status
     House = models.IntegerField(null=True)     #Links to the House
 

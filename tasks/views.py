@@ -70,7 +70,11 @@ def logout(request):
 
 def buildhouse(request):
     if request.method == "POST":
+        if not request.user.is_authenticated:
+            messages.info(request, "Login to build a house")
+            return redirect("login")
         housename = request.POST["housename"]
+
         if housename == "":
             messages.info(request, "Housename cannot be empty")
             return redirect("buildhouse")
@@ -89,6 +93,10 @@ def enterhouse(request):
     if request.method == "POST":
         housename = request.POST["housename"]
         house_id = request.POST["house_id"]
+
+        if not request.user.is_authenticated:
+            messages.info(request, "Login to enter a house")
+            return redirect("login")
 
         if housename == "" or house_id == "":
             messages.info(request, "Fields cannot be empty")
