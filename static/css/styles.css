@@ -15,35 +15,49 @@ body {
     line-height: 1.5;
 }
 
-/* ========== Header (index & any page with header) ========== */
+/* ========== Header (consistent on every page) ========== */
 header {
     background: linear-gradient(135deg, #2c3e50 0%, #1a252f 100%);
     color: white;
-    padding: 1rem 1.5rem;
+    padding: 0 2rem;
+    min-height: 64px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-    display:flex;
-    justify-content: center;
-    gap: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+}
+
+header h1 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 0;
+    line-height: 1;
+    flex: 0 0 auto;
+}
+
+header nav {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+    justify-content: flex-end;
 }
 
 header ul {
     list-style: none;
     display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
     align-items: center;
-    gap: 0.5rem 1.5rem;
-}
-
-header li {
-    display: inline-block;
+    gap: 1rem;
+    margin: 0;
+    padding: 0;
 }
 
 header a {
     color: rgba(255, 255, 255, 0.95);
     text-decoration: none;
     font-weight: 600;
-    padding: 0.35rem 0.6rem;
+    padding: 0.4rem 0.7rem;
     border-radius: 6px;
     transition: background 0.2s, color 0.2s;
 }
@@ -53,15 +67,12 @@ header a:hover {
     color: white;
 }
 
-header h1 {
-    font-size: 1.5rem;
-    font-weight: 700;
-    text-align: center;
-}
-
-/* ========== Main content (index & content pages) ========== */
+/* ========== Main content (consistent on every page) ========== */
 main {
     flex: 1;
+    width: 100%;
+    max-width: 1100px;
+    margin: 0 auto;
     padding: 2.5rem 1.5rem;
     text-align: center;
 }
@@ -118,13 +129,6 @@ footer p {
 }
 
 /* ========== Shared: form pages (register, login, enterhouse, buildhouse) ========== */
-/* Centered content when body has no header/main (form-only pages) */
-body:not(:has(header)) {
-    align-items: center;
-    justify-content: center;
-    padding: 1.5rem;
-}
-
 .page-card {
     width: 100%;
     max-width: 420px;
@@ -148,8 +152,9 @@ h6 {
 
 /* Forms - consistent across register, login, enterhouse, buildhouse */
 form {
+    display: flex;
     flex-direction: column;
-    gap: 1.rem;
+    gap: 0.75rem;
 }
 
 form p {
@@ -206,30 +211,35 @@ form input[type="submit"]:active {
     transform: translateY(0);
 }
 
-/* Form pages: wrap form + messages in a card (body direct children) */
-body>form,
-body>h6 {
+/* Form pages: wrap form + messages in a card */
+main > form,
+main > h6 {
     max-width: 420px;
     width: 100%;
     margin-left: auto;
     margin-right: auto;
+    text-align: left;
 }
 
-body>form {
+main > form {
     background: white;
     padding: 2rem;
     border-radius: 12px;
     box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
 }
 
 /* Override card sizing for edit-task form so background fits table */
-body>form.edit-task-form {
+main > form.edit-task-form {
     max-width: none;
     width: auto;
-    margin: 2rem auto;
+    margin: 0 auto;
     background: transparent;
     padding: 0;
     box-shadow: none;
+    display: block;
 }
 
 .project-title {
@@ -250,17 +260,6 @@ body>h6 {
     margin-bottom: 1rem;
 }
 
-/* ========== Standalone content (e.g. house.html) ========== */
-body>p {
-    max-width: 560px;
-    margin: 2rem auto;
-    padding: 1.5rem 2rem;
-    background: white;
-    border-radius: 12px;
-    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
-    font-size: 1rem;
-    color: #444;
-}
 
 /* ========== Headings (global) ========== */
 h1 {

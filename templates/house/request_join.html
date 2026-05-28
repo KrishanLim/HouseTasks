@@ -10,19 +10,27 @@
 </head>
 <body>
     <header>
-    <a href="{% url "enterhouse"%}">Enter House</a>
-    <a href="{% url "buildhouse"%}">Build House</a>
+        <h1>House Tasks</h1>
+        <nav>
+            <a href="{% url 'enterhouse' %}">Enter House</a>
+            <a href="{% url 'buildhouse' %}">Build House</a>
+        </nav>
     </header>
-            <form method="POST">
+    <main>
+        {% for message in messages %}
+        <h6>{{message}}</h6>
+        {% endfor %}
+        <form method="POST">
             {% csrf_token %}
             <p>Housename</p>
             <input type="text" name="housename">
             <p>House Id</p>
-            <input type="text" name="house_id"><br>
-            {% for message in messages %}
-            <h6>{{message}}</h6>
-            {% endfor %}
+            <input type="text" name="house_id">
             <input type="submit" value="send">
-            </form>
+        </form>
+    </main>
+    <footer>
+        <p>&copy; 2026 House Tasks. All rights reserved.</p>
+    </footer>
 </body>
 </html>

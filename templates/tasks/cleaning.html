@@ -8,13 +8,17 @@
     <title>Cleaning</title>
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
 </head>
-<header>
-        <h1>Cleaning Task</h1>
-        <a href="{% url "house" house_id %}">House</a>
-        <a href="{% url "members" house_id %}">Members</a>
-</header>
-
 <body>
+    <header>
+        <h1>House Tasks</h1>
+        <nav>
+            <a href="{% url 'index' %}">Home</a>
+            <a href="{% url 'house' house_id %}">House</a>
+            <a href="{% url 'members' house_id %}">Members</a>
+        </nav>
+    </header>
+    <main>
+    <h2>Cleaning Task</h2>
     <!--  Messages  -->
     <div class="messages">
         {% if messages %}
@@ -106,6 +110,10 @@
         <h2>Contact</h2>
         <p>This is the contact section.</p>
     </section>
+    </main>
+    <footer>
+        <p>&copy; 2026 House Tasks. All rights reserved.</p>
+    </footer>
     <script>
         let popup = document.getElementById("popup");
         function openPopup() {                              //Opens popup for delete func

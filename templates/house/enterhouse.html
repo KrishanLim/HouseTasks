@@ -9,20 +9,27 @@
 </head>
 <body>
     <header>
-        <a href="{% url "index" %}">Home Page</a>
+        <h1>House Tasks</h1>
+        <nav>
+            <a href="{% url 'index' %}">Home</a>
+        </nav>
     </header>
-    <form method="POST">
-        {% csrf_token %}
-        <p>Housename</p>
-        <input type="text" name="housename">
-        <p>House Id</p>
-        <input type="text" name="house_id"><br>
+    <main>
         {% for message in messages %}
         <h6>{{message}}</h6>
         {% endfor %}
-        <input type="submit">
-        <a href="request_join">Request to join</a><br>
-    </form>
-
+        <form method="POST">
+            {% csrf_token %}
+            <p>Housename</p>
+            <input type="text" name="housename">
+            <p>House Id</p>
+            <input type="text" name="house_id">
+            <input type="submit">
+            <a href="request_join">Request to join</a>
+        </form>
+    </main>
+    <footer>
+        <p>&copy; 2026 House Tasks. All rights reserved.</p>
+    </footer>
 </body>
 </html>

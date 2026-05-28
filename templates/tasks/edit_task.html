@@ -10,10 +10,12 @@
 </head>
 <body>
     <header>
-        <div>
-            <a href="{% url 'index'%}">Home</a>
-        </div>
+        <h1>House Tasks</h1>
+        <nav>
+            <a href="{% url 'index' %}">Home</a>
+        </nav>
     </header>
+    <main>
     <form method="POST" action="{% url 'edit_task' house_id %}" class="edit-task-form">
         {% csrf_token %}
         <div class="edit-task-wrap">
@@ -83,6 +85,10 @@
         </table>
         </div>
     </form>
+    </main>
+    <footer>
+        <p>&copy; 2026 House Tasks. All rights reserved.</p>
+    </footer>
     <script>
         const boxes = document.querySelectorAll("textarea.description-box");
         for (const box of boxes) {

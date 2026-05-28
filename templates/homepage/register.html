@@ -8,23 +8,32 @@
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
 </head>
 <body>
-
-<form method="POST" action="register">
-    {% csrf_token%}
-    <p>username</p>
-    <input type="text" name="username">
-    <p>email</p>
-    <input type="email" name="email">
-    <p>password</p>
-    <input type="password" name="password">
-    <p>confirm password</p>
-    <input type="password" name="confirm_password"><br>
-    
-    {% for message in messages %}
-    <h6>{{message}}</h6>
-    {% endfor %}
-    <input type="submit">
-</form>
-
+    <header>
+        <h1>House Tasks</h1>
+        <nav>
+            <a href="{% url 'index' %}">Home</a>
+            <a href="{% url 'login' %}">LogIn</a>
+        </nav>
+    </header>
+    <main>
+        {% for message in messages %}
+        <h6>{{message}}</h6>
+        {% endfor %}
+        <form method="POST" action="register">
+            {% csrf_token %}
+            <p>username</p>
+            <input type="text" name="username">
+            <p>email</p>
+            <input type="email" name="email">
+            <p>password</p>
+            <input type="password" name="password">
+            <p>confirm password</p>
+            <input type="password" name="confirm_password">
+            <input type="submit">
+        </form>
+    </main>
+    <footer>
+        <p>&copy; 2026 House Tasks. All rights reserved.</p>
+    </footer>
 </body>
 </html>
