@@ -8,12 +8,18 @@
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
 </head>
 <body>
-    <header><div style="display:flex; justify-content: center;"><a href="{%url 'members' house_id %}">Members</a></div></header>
+    <header>
+        <div>
+            <a href="{% url 'index'%}">Home</a>
+        </div>
+    </header>
     <center>
     <h1>Welcome to House {{housename}}</h1>
+    <h1> ID: {{house_id}}</h1>
     <h3>Manage Your House Task with your Family Members</h3>
     </center>
     <main>
+    <a href="{%url 'members' house_id %}">Members</a>
     <a href="{%url 'cleaning' house_id %}">Cleaning Tasks</a>
     </main>
 

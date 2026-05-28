@@ -77,10 +77,10 @@ def buildhouse(request):
         if House.objects.filter(housename=housename).exists():
             messages.info(request, "House Already Exists")
             return redirect("buildhouse")
-        house = House.objects.create(housename=housename)  # Creates a new House
-        house.save()
-        house.members.add(request.user)  # Adds the current logged in user
-        return redirect("enterhouse")  # Redirects to Enterhouse
+        new_house = House.objects.create(housename=housename)  # Creates a new House
+        new_house.save()
+        new_house.members.add(request.user)  # Adds the current logged in user
+        return house(request, new_house.id)
     else:
         return render(request, "house/buildhouse.html")
 
@@ -100,9 +100,10 @@ def enterhouse(request):
             )  # displays if house does not exist
             return redirect("enterhouse")
 
-        if not House.objects.filter(members=request.user).exists():
+        if not House.objects.filter(members=request.user, id=house_id).exists():
             messages.info(request, "Your are not a member, Request to join")
             return redirect("enterhouse")
+        
 
         house = House.objects.get(
             housename=housename, id=house_id
@@ -256,10 +257,11 @@ def edit_task(request, house_id):
 
         return redirect('cleaning',house_id=house_id)
 
-             
     if 'cancel_changes' in request.POST:
-        return redirect('cleaning')
-
+        tasks = request.POST.getlist('task_id[]')[0]
+        task = Cleaning_Task.objects.get(id=tasks)
+        house_id = task.House
+        return redirect('cleaning', house_id)
 
 def members(request, house_id):
     if request.method == "POST":
@@ -288,6 +290,6 @@ def members(request, house_id):
         members = house.members.all()  # Gets all the house members
         requests = house.request.all()  # Gets the user requests
         return render(
-            request, "house/members.html", {"members": members, "requests": requests}
+            request, "house/members.html", {"members": members, "requests": requests, 'house_id' : house_id}
         )
 

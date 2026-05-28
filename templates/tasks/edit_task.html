@@ -9,6 +9,11 @@
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
 </head>
 <body>
+    <header>
+        <div>
+            <a href="{% url 'index'%}">Home</a>
+        </div>
+    </header>
     <form method="POST" action="{% url 'edit_task' house_id %}" class="edit-task-form">
         {% csrf_token %}
         <div class="edit-task-wrap">
@@ -71,7 +76,7 @@
             <td colspan="2">
                 <div class="edit_buttons">
                 <button type="submit" name="save_changes">Save</button>
-                <button type="submit" name="cancel_changes">Cancel</button>
+                <button type="submit" name="cancel_changes" value="{{tasks.0.task_id}}" >Cancel</button>
                 </div>
             </td>
             </tr>

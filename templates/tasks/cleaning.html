@@ -9,25 +9,26 @@
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
 </head>
 <header>
-    <center>
         <h1>Cleaning Task</h1>
-    </center>
+        <a href="{% url "house" house_id %}">House</a>
+        <a href="{% url "members" house_id %}">Members</a>
 </header>
 
 <body>
     <!--  Messages  -->
     <div class="messages">
         {% if messages %}
-        {% for message in messages%}
-        <div class="alert {{ message.tags }}">
-            {{message}}
-        </div>
-        {% endfor %}
+            {% for message in messages%}
+            <div class="alert {{ message.tags }}">
+                {{message}}
+            </div>
+            {% endfor %}
         {% endif %}           
     </div>
+    {% if tasks %}
     <div class="task-section">
         <table class="display_task">
-            <form method="POST" action="{% url 'task_action' house_id%}">
+            <form method="POST" action="{% url 'task_action' house_id %}">
                 {% csrf_token %}
                 <h2>Kitchen</h2>
                 Action:
@@ -38,7 +39,7 @@
                     <option value="done">Mark Done</option>
                     <option value="unmark_done">Mark Not Done</option>
                 </select>
-                <button type="button" name="task" id="task" value="action" onclick="openPopup()">Run Action</button><br><br>
+                <button class="btn_run_action" type="button" name="task" id="task" value="action" onclick="openPopup()">Run Action</button><br><br>
                 <div class="popup" id="popup">
                     <div class="popup-inner">
                         <h1>Are you sure you want to delete tasks</h1>
@@ -53,34 +54,35 @@
                     <th>Tasks</th>
                     <th>Done</th>
                 </tr>
-                {% for task in tasks %}
-                <tr>
-                    <td onclick="toggleCheckbox(this)" class="check">
-                        <input type="checkbox" name="task_action[]" value="{{task.task.id}}">  <!-- Assigns the task id to checkbox-->
-                    </td>
-                    <td>
-                        <table class="task_display"> <!-- Displays the task values -->
-                        <tr><td>Task Name</td><td><h3>{{task.task.name}}</h3></td></tr>
-                        <tr><td>Description</td><td> {{task.task.description}}</td></tr>
-                        <tr><td>Assigned Members</td><td>{% for member in task.assigned_members %}
-                            ({{member}})
-                            {% endfor %}</td></tr>
-                        <tr><td>Date Added</td><td>{{task.task.date.date}}</td></tr>
-                        <tr><td>Added by</td><td>{{task.task.user_added}}</td></tr>
-                        </table>
-                    </td>
-                    <td class="done">
-                        {% if task.task.done %}
-                        ✅
-                        {% else %}
-                        ❌
-                        {% endif %}
-                    </td>
-                </tr>
-                {% endfor %}
+                    {% for task in tasks %}
+                    <tr>
+                        <td onclick="toggleCheckbox(this)" class="check">
+                            <input type="checkbox" name="task_action[]" value="{{task.task.id}}">  <!-- Assigns the task id to checkbox-->
+                        </td>
+                        <td>
+                            <table class="task_display"> <!-- Displays the task values -->
+                            <tr><td>Task Name</td><td><h3>{{task.task.name}}</h3></td></tr>
+                            <tr><td>Description</td><td> {{task.task.description}}</td></tr>
+                            <tr><td>Assigned Members</td><td>{% for member in task.assigned_members %}
+                                ({{member}})
+                                {% endfor %}</td></tr>
+                            <tr><td>Date Added</td><td>{{task.task.date.date}}</td></tr>
+                            <tr><td>Added by</td><td>{{task.task.user_added}}</td></tr>
+                            </table>
+                        </td>
+                        <td class="done">
+                            {% if task.task.done %}
+                            ✅
+                            {% else %}
+                            ❌
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
             </form>
         </table>
     </div>
+    {% endif %}
     <div class="container">
         <div class="form-section">
             <h4>Add Task</h4><br>
@@ -90,7 +92,7 @@
                 <input type="text" name="task_name">
                 <p>Description</p>
                 <input type="text" name="description"><br>
-                <button type="submit" name="task" value="add">Add Task</button>
+                <button class="btn_add_task" type="submit" name="task" value="add">Add Task</button>
         </div>
         <div class="list-section">
             <h4>Assign members</h4><br>
@@ -104,8 +106,6 @@
         <h2>Contact</h2>
         <p>This is the contact section.</p>
     </section>
-
-
     <script>
         let popup = document.getElementById("popup");
         function openPopup() {                              //Opens popup for delete func

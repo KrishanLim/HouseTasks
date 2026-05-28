@@ -21,6 +21,9 @@ header {
     color: white;
     padding: 1rem 1.5rem;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    display:flex;
+    justify-content: center;
+    gap: 50px;
 }
 
 header ul {
@@ -51,7 +54,6 @@ header a:hover {
 }
 
 header h1 {
-    margin: 0.5rem 0 0;
     font-size: 1.5rem;
     font-weight: 700;
     text-align: center;
@@ -230,6 +232,20 @@ body>form.edit-task-form {
     box-shadow: none;
 }
 
+.project-title {
+    display : flex;
+    align-items : center;
+    justify-content : center;
+}
+
+.edit-task-wrap {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    overflow-x: auto;
+    padding: 2rem 1rem;
+}
+
 body>h6 {
     margin-bottom: 1rem;
 }
@@ -283,7 +299,7 @@ table {
 }
 
 th {
-    background-color: #54a855;
+    background-color: #01268d;
     color: white;
     padding: 12px;
     text-align: left;
@@ -318,19 +334,39 @@ button {
     border-radius: 5px;
     /* rounded corners, optional */
     border: 1px solid #333;
-    background-color: #4CAF50;
+    background-color: rgba(52, 152, 219, 0.4);
     /* green */
     color: white;
     cursor: pointer;
+    transition : background-color 0.3s, transform 0.3s;
+}
+
+.btn_run_action {
+    margin-left : 10px;
+}
+
+.btn_add_task {
+    margin-top : 8px;
 }
 
 button:hover {
-    background-color: #45a049;
+    background-color: rgba(26, 1, 66, 0.4);
+    transform : scale(1.05)
     /* hover effect */
+}
+
+button:active {
+    transform : scale(0.95)
 }
 
 .task-section {
     margin: 2rem;
+}
+
+/* Center the edit-page outer table and let its white background size to content */
+.task-section-centered {
+    margin: 2rem auto;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
 }
 
 .display_task td:nth-child(2) {
@@ -339,19 +375,23 @@ button:hover {
 }
 
 .edit_task {
-    width: 100%;
-    display: inline-table;
-    /* margin: 2rem auto; */
+    width: 800px;
+    max-width: 100%;
+    display: table;
+    margin: 0 auto;
     box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
 }
 
+.edit_task tr:last-child td {
+    text-align: right;
+}
+
 .edit-task-form {
+    display: block;
     width: 100%;
     max-width: none;
-    width: 100px;
     margin: 0;
-    text-align: center;
-    /* overflow-x: auto; */
+    overflow-x: auto;
 }
 
 .edit_task th {
@@ -373,7 +413,7 @@ button:hover {
 
 .edit_task td:nth-child(2) {
     width: 100%;
-    width: 800px;
+    max-width : 800px;
 }
 
 .task-section .done {
@@ -465,4 +505,10 @@ textarea {
     overflow: auto;
     padding: 10px;
     line-height: 1.50;
+}
+
+.edit_buttons {
+    display: inline-flex;
+    justify-content: flex-end;
+    gap: 10px;
 }

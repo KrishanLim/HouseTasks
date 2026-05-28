@@ -9,6 +9,10 @@
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
 </head>
 <body>
+    <header>
+    <a href="{% url "enterhouse"%}">Enter House</a>
+    <a href="{% url "buildhouse"%}">Build House</a>
+    </header>
             <form method="POST">
             {% csrf_token %}
             <p>Housename</p>
@@ -20,6 +24,5 @@
             {% endfor %}
             <input type="submit" value="send">
             </form>
-
 </body>
 </html>

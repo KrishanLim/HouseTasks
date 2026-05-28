@@ -8,7 +8,9 @@
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
 </head>
 <body>
-
+    <header>
+    <a href="{% url "index" %}">Home Page</a>
+    </header>
 
 <form method="POST">
     {% csrf_token%}

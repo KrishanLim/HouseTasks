@@ -8,6 +8,11 @@
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
 </head>
 <body>
+    <header>
+        <a href="{% url 'index' %}">Home</a>
+        <a href="{% url 'cleaning' house_id%}">Cleaning Task</a>
+    </header>
+    <main>
         <table>
             <tr>
             <th>Members</th>
@@ -19,7 +24,9 @@
                 <form method="POST">
                 {% csrf_token %}
                 {% for member in members %}
-                <input type="checkbox" name="member[]" value="{{member.id}}"> {{member}}<br>
+                <label>
+                    <input type="checkbox" name="member[]" value="{{member.id}}"> {{member}}<br>
+                </label>
                 {% endfor %}
                 <button type="submit" name="action" value="remove_members">Remove members</button>
                 </form>
@@ -37,8 +44,6 @@
                 <button type="submit" name="join_request" value="reject_request">Reject Request</button>
                 </form>
                 </center>    
-            
-
                 {% else %}
                 <h3>No join request yet</h3>
                 {% endif %}
@@ -46,5 +51,6 @@
             </tr>
             
         </table>
+    </main>
 </body>
 </html>
