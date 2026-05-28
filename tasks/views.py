@@ -1,7 +1,8 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.models import User, Group, auth
 from django.contrib import messages
-from .models import House
+from .models import House, Cleaning_Task
+from datetime import date, datetime
 
 # from cryptography.fernet import Fernet
 
@@ -69,17 +70,21 @@ def logout(request):
 
 def buildhouse(request):
     if request.method == "POST":
+        if not request.user.is_authenticated:
+            messages.info(request, "Login to build a house")
+            return redirect("login")
         housename = request.POST["housename"]
+
         if housename == "":
             messages.info(request, "Housename cannot be empty")
             return redirect("buildhouse")
         if House.objects.filter(housename=housename).exists():
             messages.info(request, "House Already Exists")
             return redirect("buildhouse")
-        house = House.objects.create(housename=housename)  # Creates a new House
-        house.save()
-        house.members.add(request.user)  # Adds the current logged in user
-        return redirect("enterhouse")  # Redirects to Enterhouse
+        new_house = House.objects.create(housename=housename)  # Creates a new House
+        new_house.save()
+        new_house.members.add(request.user)  # Adds the current logged in user
+        return house(request, new_house.id)
     else:
         return render(request, "house/buildhouse.html")
 
@@ -88,6 +93,10 @@ def enterhouse(request):
     if request.method == "POST":
         housename = request.POST["housename"]
         house_id = request.POST["house_id"]
+
+        if not request.user.is_authenticated:
+            messages.info(request, "Login to enter a house")
+            return redirect("login")
 
         if housename == "" or house_id == "":
             messages.info(request, "Fields cannot be empty")
@@ -99,9 +108,10 @@ def enterhouse(request):
             )  # displays if house does not exist
             return redirect("enterhouse")
 
-        if not House.objects.filter(members=request.user).exists():
+        if not House.objects.filter(members=request.user, id=house_id).exists():
             messages.info(request, "Your are not a member, Request to join")
             return redirect("enterhouse")
+        
 
         house = House.objects.get(
             housename=housename, id=house_id
@@ -134,7 +144,7 @@ def request_join(request):
             messages.info(request, "You already are a member of this house")
             return redirect("request_join")
         house.request.add(request.user)  # Adds to the request list
-        messages.info(request, "Request sent successfully")
+        messages.success(request, "Request sent successfully")
         return redirect("request_join")
 
     else:
@@ -152,45 +162,142 @@ def house(request, house_id):
 
 
 def cleaning(request, house_id):
-    return render(request, "tasks/cleaning.html")
+    if request.method=='POST':
+        house=get_object_or_404(House,id=house_id,members=request.user)
+        task_name=request.POST['task_name']
+        description=request.POST['description']
+        task=request.POST.get("task")
+        assigned_members= request.POST.getlist("assigned_members[]")
+        date_today=date.today()                 #   Date
+        date_=date_today.isocalendar()           #Datefield
+        week=date_.week
 
+        if task=='add':             #adds tasks if user presses add task button
+            if task_name=='' or description=='':
+                messages.error(request, 'Task name or Description cannot be empty')
+                return redirect('cleaning',house_id)
+            if not assigned_members:
+                messages.error(request,'Assign members')
+                return redirect('cleaning',house_id)
+            new_task=Cleaning_Task.objects.create(name=task_name,description=description,user_added=request.user,date=datetime.now(),House=house_id,start_week=week)
+            for member in assigned_members:
+                new_task.assigned_members.add(member)
+            messages.success(request,'Task added sucessfully')
+            return redirect('cleaning',house_id)
+
+    else:
+        house=get_object_or_404(House,id=house_id,members=request.user) #Gets the house from models with specific houseId if user is on of the member
+        tasks_data=Cleaning_Task.objects.filter(House=house_id) #Gets the tasks_data
+        tasks=[]
+        for task in tasks_data:
+            tasks.append({'task': task,'assigned_members':task.assigned_members.all()})
+        members=house.members.all()
+        return render(request, "tasks/cleaning.html",{'members':members,'tasks':tasks,'house_id':house_id})
+
+def task_action(request, house_id):     #Actions to be performed on tasks (UD) OF CRUD
+    action=request.POST.get('task_action')
+    tasks=request.POST.getlist('task_action[]')
+    cleaning = Cleaning_Task.objects.filter(House=house_id)
+    delete = request.POST.get('delete')
+
+    if action=='':
+        messages.error(request,'Select Action to perform')
+        return redirect('cleaning',house_id)
+    if not tasks:
+        messages.error(request,'Select tasks to perform actions')
+        return redirect('cleaning',house_id)
+
+    #Renders edit_task page
+    elif action=='edit':
+        tasks_to_edit=[]
+      
+        for task in tasks:
+            house_task=cleaning.get(id=task)
+            house=House.objects.get(id=house_id)
+            house_members = house.members.all()
+            task_members = house_task.assigned_members.all()    
+            #Gets members that are not assigned to the task
+            not_assigned_members = list(set(task_members) ^ set(house_members))
+            tasks_to_edit.append({'task': house_task, 'not_assigned_members':not_assigned_members})
+        return render(request,'tasks/edit_task.html',{'tasks' : tasks_to_edit, 'house_id' : house_id})
+    if delete=="yes":
+        for task in tasks:
+            task_to_delete = cleaning.get(id=task)
+            task_to_delete.delete()
+        messages.success(request,'successfully deletd tasks')
+        return redirect('cleaning',house_id)
+    if action=='done':
+        for task_id in tasks:
+            task_to_mark = cleaning.get(id=task_id)
+            task_to_mark.done=True
+            task_to_mark.save()
+        messages.success(request,'Tasks marked done')
+        return redirect('cleaning',house_id)
+    if action=='unmark_done':
+        for task_id in tasks:
+            task_to_unmark=cleaning.get(id=task_id)
+            task_to_unmark.done=False
+            task_to_unmark.save()
+        messages.success(request,'Tasks unmarked done')
+    return redirect('cleaning',house_id)
+
+
+def edit_task(request, house_id):
+    if 'save_changes' in request.POST:
+        #Do not move this
+        do_not_move_this_task_id = request.POST.getlist('task_id[]')
+        
+        #Change every task
+        for num in do_not_move_this_task_id:
+            task_name=request.POST.get(f'task_name{num}')
+            task_description = request.POST.get(f'description{num}')
+            members_to_add = request.POST.getlist(f'add_members{num}[]')
+            members_to_remove = request.POST.getlist(f'remove_members{num}[]')
+            task= Cleaning_Task.objects.get(id=num)
+            task.name = task_name
+            task.description = task_description
+
+            for member in members_to_add:
+                task.assigned_members.add(member)
+            for member in members_to_remove:
+                task.assigned_members.remove(member)
+            task.save()
+
+        return redirect('cleaning',house_id=house_id)
+
+    if 'cancel_changes' in request.POST:
+        tasks = request.POST.getlist('task_id[]')[0]
+        task = Cleaning_Task.objects.get(id=tasks)
+        house_id = task.House
+        return redirect('cleaning', house_id)
 
 def members(request, house_id):
-    if request.method=='POST':
-        member_id=request.POST.getlist('member[]')
-        members_action=request.POST.get('action')
-        join_request=request.POST.get('join_request')   
-        member_request=request.POST.getlist('member_request[]')     #gets list of checked members
-        house=House.objects.get(id=house_id)        #Slects house_id
+    if request.method == "POST":
+        member_id = request.POST.getlist("member[]")
+        members_action = request.POST.get("action")
+        join_request = request.POST.get("join_request")
+        member_request = request.POST.getlist(
+            "member_request[]"
+        )  # gets list of checked members
+        house = House.objects.get(id=house_id)  # Selects house_id
 
-        if members_action=='remove_members':
+        if members_action == "remove_members":
             for member in member_id:
                 house.members.remove(member)
 
-        if join_request=='add_members':       #If user pressed add members
+        if join_request == "add_members":  # If user pressed add members
             for member in member_request:
-                house.members.add(member)         #Adds selected user to the members list
-                house.request.remove(member)    # Removes request
-        elif join_request=='reject_request':
-                for member in member_request:
-                    house.request.remove(member)    #Rejects join request
-        return redirect("members",house_id=house_id)
+                house.members.add(member)  # Adds selected user to the members list
+                house.request.remove(member)  # Removes request
+        elif join_request == "reject_request":
+            for member in member_request:
+                house.request.remove(member)  # Rejects join request
+        return redirect("members", house_id=house_id)
     else:
         house = get_object_or_404(House, id=house_id, members=request.user)
-        members = house.members.all()           #Gets all the house members
-        requests = house.request.all()          #Gets the user requests
+        members = house.members.all()  # Gets all the house members
+        requests = house.request.all()  # Gets the user requests
         return render(
-            request, "house/members.html", {'members':members,'requests':requests}
+            request, "house/members.html", {"members": members, "requests": requests, 'house_id' : house_id}
         )
 
-
-def groceries(request, house_id):
-    return render(request, "tasks/groceries.html")
-
-
-def plans(request, house_id):
-    return render(request, "tasks/plans.html")
-
-
-def extras(request, house_id):
-    return render(request, "tasks/extras.html")

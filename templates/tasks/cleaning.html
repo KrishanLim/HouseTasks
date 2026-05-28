@@ -1,6 +1,7 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,6 +9,142 @@
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
 </head>
 <body>
+    <header>
+        <h1>House Tasks</h1>
+        <nav>
+            <a href="{% url 'index' %}">Home</a>
+            <a href="{% url 'house' house_id %}">House</a>
+            <a href="{% url 'members' house_id %}">Members</a>
+        </nav>
+    </header>
+    <main>
+    <h2>Cleaning Task</h2>
+    <!--  Messages  -->
+    <div class="messages">
+        {% if messages %}
+            {% for message in messages%}
+            <div class="alert {{ message.tags }}">
+                {{message}}
+            </div>
+            {% endfor %}
+        {% endif %}           
+    </div>
+    {% if tasks %}
+    <div class="task-section">
+        <table class="display_task">
+            <form method="POST" action="{% url 'task_action' house_id %}">
+                {% csrf_token %}
+                <h2>Kitchen</h2>
+                Action:
+                <select name="task_action" id="task_action">
+                    <option value="">------</option>
+                    <option value="edit">Edit Task</option>
+                    <option value="delete">Delete Task</option>
+                    <option value="done">Mark Done</option>
+                    <option value="unmark_done">Mark Not Done</option>
+                </select>
+                <button class="btn_run_action" type="button" name="task" id="task" value="action" onclick="openPopup()">Run Action</button><br><br>
+                <div class="popup" id="popup">
+                    <div class="popup-inner">
+                        <h1>Are you sure you want to delete tasks</h1>
+                        <button type="submit" name="delete" value="yes" id="yes" onclick="closePopup()">Yes</button>
+                        <button type="button" id="no" onclick="closePopup()">No</button>
+                    </div>
+                </div>
+                <tr>
+                    <th class="check" onclick="toggleCheckbox(this)">
+                        <input type="checkbox" name="select_all" id="select_all" onclick="toggleAllCheckboxes(this)"> All
+                    </th>
+                    <th>Tasks</th>
+                    <th>Done</th>
+                </tr>
+                    {% for task in tasks %}
+                    <tr>
+                        <td onclick="toggleCheckbox(this)" class="check">
+                            <input type="checkbox" name="task_action[]" value="{{task.task.id}}">  <!-- Assigns the task id to checkbox-->
+                        </td>
+                        <td>
+                            <table class="task_display"> <!-- Displays the task values -->
+                            <tr><td>Task Name</td><td><h3>{{task.task.name}}</h3></td></tr>
+                            <tr><td>Description</td><td> {{task.task.description}}</td></tr>
+                            <tr><td>Assigned Members</td><td>{% for member in task.assigned_members %}
+                                ({{member}})
+                                {% endfor %}</td></tr>
+                            <tr><td>Date Added</td><td>{{task.task.date.date}}</td></tr>
+                            <tr><td>Added by</td><td>{{task.task.user_added}}</td></tr>
+                            </table>
+                        </td>
+                        <td class="done">
+                            {% if task.task.done %}
+                            ✅
+                            {% else %}
+                            ❌
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+            </form>
+        </table>
+    </div>
+    {% endif %}
+    <div class="container">
+        <div class="form-section">
+            <h4>Add Task</h4><br>
+            <form method="post">
+                {% csrf_token %}
+                <p>Task name</p>
+                <input type="text" name="task_name">
+                <p>Description</p>
+                <input type="text" name="description"><br>
+                <button class="btn_add_task" type="submit" name="task" value="add">Add Task</button>
+        </div>
+        <div class="list-section">
+            <h4>Assign members</h4><br>
+            {% for member in members%}
+            <input type="checkbox" name="assigned_members[]" value={{member.id}}>{{member}}<br>
+            {% endfor %}
+        </div>
+        </form>
+    </div>
+    <section>
+        <h2>Contact</h2>
+        <p>This is the contact section.</p>
+    </section>
+    </main>
+    <footer>
+        <p>&copy; 2026 House Tasks. All rights reserved.</p>
+    </footer>
+    <script>
+        let popup = document.getElementById("popup");
+        function openPopup() {                              //Opens popup for delete func
+            let task_action = document.getElementById("task_action").value;
+            let button = document.getElementById("task");
+            console.log(task_action);
+            if (task_action == "delete") {
+                button.type = "button"
+                console.log("del")
+                popup.classList.add("open-popup")
+            }
+            else {
+                button.type = "submit"
+            }
+        }
 
+        function closePopup() {                        //Closes popup
+            popup.classList.remove("open-popup")
+        }
+
+        function toggleCheckbox(cell) {                     //Toggles checkbox when cell is clicked
+            cell.querySelector('input').click();
+        }
+
+        function toggleAllCheckboxes(master) {
+            let checkboxes = document.querySelectorAll('input[name="task_action[]"]');
+
+            checkboxes.forEach(function(box) {
+                box.checked = master.checked;
+            });
+        }
+    </script>
 </body>
 </html>

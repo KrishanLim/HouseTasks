@@ -8,17 +8,21 @@
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
 </head>
 <body>
-    <header><div style="display:flex; justify-content: center;"><a href="{%url 'members' house_id %}">Members</a></div></header>
-    <center>
-    <h1>Welcome to House {{housename}}</h1>
-    <h3>Manage Your House Task with your Family Members</h3>
-    </center>
+    <header>
+        <h1>House Tasks</h1>
+        <nav>
+            <a href="{% url 'index' %}">Home</a>
+        </nav>
+    </header>
     <main>
-    <a href="{%url 'cleaning' house_id %}">Cleaning Tasks</a>
-    <a href="{%url 'groceries' house_id %}">Groceries</a>
-    <a href="{%url 'plans' house_id %}">Plans</a>
-    <a href="{%url 'extras' house_id %}">Extras</a>
+        <h2>Welcome to House {{housename}}</h2>
+        <h3>ID: {{house_id}}</h3>
+        <p>Manage Your House Task with your Family Members</p>
+        <a href="{% url 'members' house_id %}">Members</a>
+        <a href="{% url 'cleaning' house_id %}">Cleaning Tasks</a>
     </main>
-
+    <footer>
+        <p>&copy; 2026 House Tasks. All rights reserved.</p>
+    </footer>
 </body>
 </html>

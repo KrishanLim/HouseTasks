@@ -11,9 +11,8 @@ urlpatterns=[
     path('request_join',views.request_join,name='request_join'),
     path('buildhouse/',views.buildhouse, name='buildhouse'),
     path('house/<int:house_id>',views.house, name='house'),
-    path('house/members<int:house_id>',views.members, name='members'),
-    path('house/cleaning<int:house_id>',views.cleaning, name='cleaning'),
-    path('house/extras<int:house_id>',views.extras, name='extras'),
-    path('house/groceries<int:house_id>',views.groceries, name='groceries'),
-    path('house/plans<int:house_id>',views.house, name='plans'),
+    path('members/<int:house_id>',views.members, name='members'),
+    path('cleaning/<int:house_id>',views.cleaning, name='cleaning'),
+    path('task_action/<int:house_id>',views.task_action,name='task_action'),
+    path('edit_task/<int:house_id>',views.edit_task,name='edit_task')
 ]

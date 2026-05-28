@@ -8,16 +8,25 @@
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
 </head>
 <body>
-
-
-<form method="POST">
-    {% csrf_token%}
-    <p>Housename</p>
-    <input type="text" name="housename"><br> 
-    {% for message in messages %}
-    <h6>{{message}}</h6>
-    {% endfor %}
-    <input type="submit">
-</form>
+    <header>
+        <h1>House Tasks</h1>
+        <nav>
+            <a href="{% url 'index' %}">Home</a>
+        </nav>
+    </header>
+    <main>
+        {% for message in messages %}
+        <h6>{{message}}</h6>
+        {% endfor %}
+        <form method="POST">
+            {% csrf_token %}
+            <p>Housename</p>
+            <input type="text" name="housename">
+            <input type="submit">
+        </form>
+    </main>
+    <footer>
+        <p>&copy; 2026 House Tasks. All rights reserved.</p>
+    </footer>
 </body>
 </html>

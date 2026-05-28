@@ -11,6 +11,6 @@ import os
 
 from django.core.wsgi import get_wsgi_application
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'HouseTasks.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'HouseTasks.settings.prod')
 
 application = get_wsgi_application()

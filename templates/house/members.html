@@ -8,38 +8,60 @@
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
 </head>
 <body>
-        <table>
-            <tr>
-            <th>Members</th>
-            <th>Join request</th>
-            </tr>
-            <tr>
-            <td>
-                <form method="POST">
-                {% csrf_token %}
-                {% for member in members %}
-                <input type="checkbox" name="member[]" value="{{member.id}}"> {{member}}<br>
-                {% endfor %}
-                <button type="submit" name="action" value="remove_members">Remove members</button>
-                </form>
-            </td>
-            <td>
-                {% if requests %}
-                <form method="post">
-                {% csrf_token %}
-                {% for request in requests %}
-                <input type="checkbox" name="member_request[]" value="{{request.id}}"> {{request}}<br>
-                {% endfor %}
-                <button type="submit" name="join_request" value="add_members">Add Members</button>
-                <button type="submit" name="join_request" value="reject_request">Reject Request</button>
-                </form>
-
-                {% else %}
-                <h3>No join request yet</h3>
-                {% endif %}
-            </td>
-            </tr>
-            
-        </table>
+    <header>
+        <h1>House Tasks</h1>
+        <nav>
+            <a href="{% url 'index' %}">Home</a>
+            <a href="{% url 'house' house_id %}">House</a>
+            <a href="{% url 'cleaning' house_id %}">Cleaning Task</a>
+        </nav>
+    </header>
+    <main>
+        <div style= "display: flex; 
+                    justify-content: center;       
+        ">
+            <table>
+                <tr>
+                <th>Members</th>
+                <th>Join request</th>
+                </tr>
+                <tr>
+                <td>
+                    <center>
+                    <form method="POST">
+                    {% csrf_token %}
+                    {% for member in members %}
+                    <label>
+                        <input type="checkbox" name="member[]" value="{{member.id}}"> {{member}}<br>
+                    </label>
+                    {% endfor %}
+                    <button type="submit" name="action" value="remove_members">Remove members</button>
+                    </form>
+                    </center>
+                </td>
+                <td>
+                    <center>
+                    {% if requests %}
+                    <form method="post">
+                    {% csrf_token %}
+                    {% for request in requests %}
+                    <input type="checkbox" name="member_request[]" value="{{request.id}}"> {{request}}<br>
+                    {% endfor %}
+                    <button type="submit" name="join_request" value="add_members">Add Members</button>
+                    <button type="submit" name="join_request" value="reject_request">Reject Request</button>
+                    </form>
+                    </center>    
+                    {% else %}
+                    <h3>No join request yet</h3>
+                    {% endif %}
+                </td>
+                </tr>
+                
+            </table>
+        </div>
+    </main>
+    <footer>
+        <p>&copy; 2026 House Tasks. All rights reserved.</p>
+    </footer>
 </body>
 </html>
