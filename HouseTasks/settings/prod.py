@@ -13,6 +13,3 @@ DATABASES = {
         default = config('DB_URL'),
     )
 }
-
-STATIC_ROOT = BASE_DIR / 'staticfiles'
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
