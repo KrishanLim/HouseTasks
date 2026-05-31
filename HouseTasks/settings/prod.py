@@ -5,7 +5,7 @@ import os
 
 SECRET_KEY = config('SECRET_KEY')
 DEBUG= False
-ALLOWED_HOSTS = [os.environ.get('RENDER_EXTERNAL_HOSTNAME', '')]
+ALLOWED_HOSTS = [os.environ.get('RAILWAY_HOSTNAME', '')]
 
 DATABASES = {
     'default': dj_database_url.config(
