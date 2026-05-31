@@ -5,7 +5,8 @@ import os
 
 SECRET_KEY = config('SECRET_KEY')
 DEBUG= False
-ALLOWED_HOSTS = [os.environ.get('RAILWAY_HOSTNAME', '')]
+ALLOWED_HOSTS = ['.up.railway.app']
+CSRF_TRUSTED_ORIGINS = ['https://*.up.railway.app']
 
 DATABASES = {
     'default': dj_database_url.config(
