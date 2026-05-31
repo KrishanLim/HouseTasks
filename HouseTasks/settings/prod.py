@@ -8,14 +8,9 @@ DEBUG= False
 ALLOWED_HOSTS = [os.environ.get('RENDER_EXTERNAL_HOSTNAME', '')]
 
 DATABASES = {
-    'default': {
-        'ENGINE' : 'django.db.backends.postgresql',
-        'NAME' : config('DB_NAME'),
-        'USER' : config('DB_USER'),
-        'PASSWORD' : config('DB_PASSWORD'),
-        'HOST' : config('DB_HOST'),
-        'PORT' : config('DB_PORT'),
-    }
+    'default': dj_database_url.config(
+        default = config('DB_URL'),
+    )
 }
 
 STATIC_ROOT = BASE_DIR / 'staticfiles'
